@@ -130,7 +130,7 @@ detect_mac80211() {
 			set wireless.default_radio${devidx}.device=radio${devidx}
 			set wireless.default_radio${devidx}.network=lan
 			set wireless.default_radio${devidx}.mode=ap
-			set wireless.default_radio${devidx}.ssid=OpenWrt{ssid_wlan}${ssnm}
+			set wireless.default_radio${devidx}.ssid=OpenWrt${ssid_wlan}${ssnm}
 			set wireless.default_radio${devidx}.encryption=none
 			set wireless.default_radio${devidx}.disassoc_low_ack=0
 			set wireless.default_radio${devidx}.isolate=0
