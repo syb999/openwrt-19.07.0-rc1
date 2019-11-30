@@ -7,19 +7,23 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hostapd
-PKG_RELEASE:=9
+PKG_VERSION:=2019-08-08
+PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=http://w1.fi/hostap.git
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2018-12-02
-PKG_SOURCE_VERSION:=c2c6c01bb8b6fafc2074b46a53c4eab2c145ac6f
-PKG_MIRROR_HASH:=d381123fe42059b553d96122a03c35e7d1709153c3aaf10fa4e74fe59be243dd
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=ca8c2bd28ad53f431d6ee60ef754e98cfdb4c17b
+PKG_MIRROR_HASH:=9d9f1c60afa5324ee17219bd3ec61c1a6fa4043b4187da9bb44e59025d3ed31d
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 PKG_LICENSE:=BSD-3-Clause
 PKG_CPE_ID:=cpe:/a:w1.fi:hostapd
 
 PKG_BUILD_PARALLEL:=1
+
+TARGET_CFLAGS += -std=gnu99
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_kmod-ath9k \
@@ -95,11 +99,11 @@ endif
 
 ifeq ($(LOCAL_VARIANT),full)
   ifeq ($(SSL_VARIANT),openssl)
-    DRIVER_MAKEOPTS += CONFIG_TLS=openssl CONFIG_SAE=y CONFIG_OWE=y CONFIG_SUITEB192=y
+    DRIVER_MAKEOPTS += CONFIG_TLS=openssl CONFIG_SAE=y CONFIG_OWE=y CONFIG_SUITEB192=y CONFIG_AP=y CONFIG_MESH=y
     TARGET_LDFLAGS += -lcrypto -lssl
   endif
   ifeq ($(SSL_VARIANT),wolfssl)
-    DRIVER_MAKEOPTS += CONFIG_TLS=wolfssl CONFIG_WPS_NFC=1 CONFIG_SAE=y CONFIG_OWE=y CONFIG_SUITEB192=y
+    DRIVER_MAKEOPTS += CONFIG_TLS=wolfssl CONFIG_WPS_NFC=1 CONFIG_SAE=y CONFIG_OWE=y CONFIG_SUITEB192=y CONFIG_AP=y CONFIG_MESH=y
     TARGET_LDFLAGS += -lwolfssl
   endif
 endif
@@ -206,6 +210,7 @@ define Package/wpad
 $(call Package/wpad/Default,$(1))
   TITLE+= (full)
   VARIANT:=wpad-full-internal
+  DEPENDS+=+libopenssl
 endef
 
 define Package/wpad/description
@@ -245,6 +250,7 @@ define Package/wpad-mini
 $(call Package/wpad/Default,$(1))
   TITLE+= (WPA-PSK only)
   VARIANT:=wpad-mini
+  DEPENDS+=+libopenssl
 endef
 
 define Package/wpad-mini/description
